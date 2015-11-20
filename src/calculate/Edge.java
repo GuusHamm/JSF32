@@ -23,4 +23,8 @@ public class Edge
         this.Y2 = Y2;
         this.color = color;
     }
+
+    public Edge(Edge edge, Color color){
+        this(edge.X1, edge.Y1, edge.X2, edge.Y2, color);
+    }
 }

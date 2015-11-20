@@ -1,123 +1,111 @@
 package jsf32kochfractalfx;
 
 import calculate.Edge;
-import calculate.KochCallable;
 import calculate.KochFractal;
-import timeutil.TimeStamp;
+import calculate.KochTask;
+import javafx.application.Platform;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.concurrent.*;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by linux on 23-9-15.
  */
-public class KochManager implements Observer, Callable {
+public class KochManager {
 
     private jsf32kochfractalfx.JSF31KochFractalFX application;
     private ArrayList<Edge> edges = new ArrayList<Edge>();
+    private ArrayList<Edge> oldEdges = new ArrayList<Edge>();
     private int count =1;
+    private CyclicBarrier cyclicBarrier;
+    private ExecutorService pool;
 
-    TimeStamp time = new TimeStamp();
+	KochTask leftTask;
+			KochTask bottomTask;
+	KochTask rightTask;
+
+	private StopWatch stopWatch;
 
     public KochManager(jsf32kochfractalfx.JSF31KochFractalFX application) {
 
         this.application = application;
     }
 
-    public void changeLevel(int nxt) {
+    public void changeLevel(int nxt){
+		stopWatch = new StopWatch();
+		stopWatch.start();
+
+		oldEdges.addAll(edges);
+		edges.clear();
 
         count = 0;
 
-        edges.clear();
-        TimeStamp time = new TimeStamp();
-        time.setBegin();
 
-        CyclicBarrier cyclicBarrier = new CyclicBarrier(3);
+        pool = Executors.newFixedThreadPool(3);
+        cyclicBarrier = new CyclicBarrier(3);
 
-        ExecutorService pool = Executors.newFixedThreadPool(3);
+		this.leftTask = new KochTask(this,cyclicBarrier,application.getProgressLeft(),application.getLabelProgressLeft(), KochFractal.position.LEFT,nxt);
+		this.bottomTask = new KochTask(this,cyclicBarrier,application.getProgressBottom(),application.getLabelProgressBottom(), KochFractal.position.BOTTOM,nxt);
+		this.rightTask = new KochTask(this, cyclicBarrier,application.getProgressRight(),application.getLabelProgressRight(), KochFractal.position.RIGHT,nxt);
 
-        Future<ArrayList> listLeft = pool.submit(new KochCallable(this, cyclicBarrier, KochFractal.position.LEFT,nxt));
-        Future<ArrayList> listBottom = pool.submit(new KochCallable(this, cyclicBarrier, KochFractal.position.BOTTOM,nxt));
-        Future<ArrayList> listRight = pool.submit(new KochCallable(this, cyclicBarrier, KochFractal.position.RIGHT,nxt));
+		pool.submit(leftTask);
+		pool.submit(bottomTask);
+		pool.submit(rightTask);
 
-        try {
-
-            edges.addAll(listLeft.get());
-            edges.addAll(listBottom.get());
-            edges.addAll(listRight.get());
-
-        }
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        time.setEnd();
-        application.setTextCalc(time.toString().substring(20));
-
-        application.requestDrawEdges();
-        time.setEnd();
-        application.setTextCalc(time.toString().substring(20));
+        application.setTextCalc(stopWatch.toString());
     }
 
 
-    public void drawEdges() {
+    public void drawEdges(Color color) {
 
         application.clearKochPanel();
-        TimeStamp time = new TimeStamp();
-        time.setBegin();
+		synchronized (edges) {
+			for (Edge e : edges) {
+				if (color == null) application.drawEdge(e);
+				else application.drawEdge(new Edge(e, color));
+			}
+		}
 
-        for(Edge e : edges)
-        {
-            application.drawEdge(e);
+		synchronized (oldEdges) {
+			for (Edge e : oldEdges) {
+				application.drawEdge(e);
+			}
+		}
+    }
+
+    public void signalEnd() {
+        pool.shutdown();
+        synchronized (oldEdges) {
+            oldEdges.clear();
         }
-        time.setEnd();
-
-        application.setTextDraw(time.toString().substring(20));
-        application.setTextNrEdges(edges.size() + "");
+        application.requestDrawEdges();
     }
 
-
-    public void update(Observable o, Object arg) {
-
-        count++;
-        //application.drawEdge((Edge) arg);
-        addEdge((Edge) arg);
-//        if(count>=3)
-//        {
-//            drawEdges();
-//        }
-    }
-    public synchronized void addEdge(Edge e )
-    {
+    public synchronized void addEdge(Edge e )    {
         edges.add(e);
     }
 
-    public synchronized void addCount()
-    {
-        count++;
-        if(count==3)
-        {
-            drawEdges();
-            time.setEnd();
-            application.setTextCalc(time.toString().substring(20));
+	public void cancel() {
+		leftTask.cancel();
+		bottomTask.cancel();
+		rightTask.cancel();
+	}
 
-            application.requestDrawEdges();
+	public void drawEdge(Edge edge){
+		drawEdges(Color.WHITE);
+		application.drawEdge(edge);
+	}
 
-            time.setEnd();
-            application.setTextCalc(time.toString().substring(20));
-            count=1;
-        }
-    }
-
-    @Override
-    public Object call() throws Exception {
-        return null;
-    }
+	public void updateTimestamp() {
+		String ms = stopWatch.toString();
+		Platform.runLater(() -> {
+			application.setTextDraw(ms);
+			application.setTextNrEdges(String.valueOf(edges.size()));
+		});
+	}
 }
 
 
