@@ -34,15 +34,6 @@ public class KochManager {
         this.application = application;
     }
 
-	public boolean getApplication() {
-		if(application.getLabelProgressBottom() != null){
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
 	public void changeLevel(int nxt){
 		stopWatch = new StopWatch();
 		stopWatch.start();
@@ -60,23 +51,6 @@ public class KochManager {
 		this.bottomTask = new KochTask(this,cyclicBarrier,application.getProgressBottom(),application.getLabelProgressBottom(), KochFractal.position.BOTTOM,nxt);
 		this.rightTask = new KochTask(this, cyclicBarrier,application.getProgressRight(),application.getLabelProgressRight(), KochFractal.position.RIGHT,nxt);
 
-		try {
-			this.leftTask.call();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			this.bottomTask.call();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		try {
-			this.rightTask.call();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		pool.submit(leftTask);
 		pool.submit(bottomTask);
 		pool.submit(rightTask);
@@ -127,12 +101,12 @@ public class KochManager {
 
 	public void updateTimestamp() {
 		String ms = stopWatch.toString();
-		if (getApplication() == true){
+
 			Platform.runLater(() -> {
 				application.setTextDraw(ms);
 				application.setTextNrEdges(String.valueOf(edges.size()));
 			});
-		}
+
 	}
 
 	public ArrayList<Edge> getOldEdges() {
@@ -140,6 +114,14 @@ public class KochManager {
 	}
 	public ArrayList<Edge> getNewEdges() {
 		return edges;
+	}
+
+	public void setEdges(ArrayList<Edge> edges) {
+		this.edges = edges;
+	}
+
+	public void setOldEdges(ArrayList<Edge> oldEdges) {
+		this.oldEdges = oldEdges;
 	}
 }
 

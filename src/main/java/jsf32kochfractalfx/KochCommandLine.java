@@ -3,6 +3,7 @@ package jsf32kochfractalfx;
 import calculate.Edge;
 import calculate.KochFractal;
 
+import java.io.*;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -14,7 +15,7 @@ import java.util.Scanner;
 public class KochCommandLine implements Observer {
 	KochManager kochManager;
 	JSF31KochFractalFX jsf31KochFractalFX;
-
+    Serializer serializer = new Serializer();
 	public KochCommandLine(int edgeNumber) {
 
 		jsf31KochFractalFX = new JSF31KochFractalFX();
@@ -29,25 +30,37 @@ public class KochCommandLine implements Observer {
 		kochFractal.generateRightEdge();
 
 		List<Edge> edges = kochManager.getNewEdges();
-		System.out.println("test");
-		for( Edge edge : edges){
-			System.out.println(edge.toString());
-		}
-		System.out.println(edges.size());
+		System.out.println("calculated edges :" + edges.size());
+
+		SavableEdge savableEdge = new SavableEdge(edges,edgeNumber,edges.size());
+		serializer.writeToBinary(savableEdge);
+    }
 
 
-	}
+
+//	private void writeToBufferedText(SavableEdge savable ,File outputFile){
+//		try {
+//			FileWriter fw = new FileWriter(outputFile);
+//			BufferedWriter bw = new BufferedWriter(fw);
+//			bw.write(txt);
+//			bw.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//	}
+
 
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
 
-		System.out.println("Give me something too work with here,ffs");
+		System.out.println("Give me something too work with here");
 
 		int i = input.nextInt();
 		System.out.println("Calculating Edges");
 		new KochCommandLine(i);
 
-		System.out.println("Job Done");
+		System.out.println("Hurray Great Success");
 	}
 
 	@Override

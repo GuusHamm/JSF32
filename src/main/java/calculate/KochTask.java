@@ -81,7 +81,6 @@ public class KochTask extends Task<ArrayList> implements Observer{
 
 		edgesCalculated++;
 
-		if (kochManager.getApplication()){
 			Platform.runLater(() -> {
 				kochManager.drawEdge(new Edge(edge, Color.WHITE));
 				if(progressBar!=null) {
@@ -89,7 +88,7 @@ public class KochTask extends Task<ArrayList> implements Observer{
 					updateMessage(edgesCalculated + " / " + kochFractal.getNrOfEdges() / 3);
 				}
 			});
-		}
+
 
 		kochManager.updateTimestamp();
 		try {
