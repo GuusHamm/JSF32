@@ -114,6 +114,11 @@ public class KochFractal extends Observable  {
         RIGHT,
         BOTTOM
     }
+    public KochFractal(){
+
+    }
+
+
     public KochFractal(position p, KochManager k)
     {
         side = p;
@@ -121,5 +126,5 @@ public class KochFractal extends Observable  {
     }
 
 
-    }
+}
 

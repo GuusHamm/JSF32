@@ -40,11 +40,13 @@ public class KochTask extends Task<ArrayList> implements Observer{
 		this.progressBar = progressBar;
 		this.label = label;
 		this.position = position;
-		progressBar.progressProperty().bind(this.progressProperty());
-		label.textProperty().bind(this.messageProperty());
+		if(progressBar!=null) {
+			progressBar.progressProperty().bind(this.progressProperty());
+			label.textProperty().bind(this.messageProperty());
+		}
     }
 
-    @Override
+	@Override
     public ArrayList<Edge> call() throws Exception
     {
 		switch (position) {
@@ -79,13 +81,15 @@ public class KochTask extends Task<ArrayList> implements Observer{
 
 		edgesCalculated++;
 
-		Platform.runLater(() -> {
-			kochManager.drawEdge(new Edge(edge, Color.WHITE));
-			updateProgress(edgesCalculated, kochFractal.getNrOfEdges() / 3);
-			updateMessage(edgesCalculated + " / " + kochFractal.getNrOfEdges() / 3);
-
-
-        });
+		if (kochManager.getApplication()){
+			Platform.runLater(() -> {
+				kochManager.drawEdge(new Edge(edge, Color.WHITE));
+				if(progressBar!=null) {
+					updateProgress(edgesCalculated, kochFractal.getNrOfEdges() / 3);
+					updateMessage(edgesCalculated + " / " + kochFractal.getNrOfEdges() / 3);
+				}
+			});
+		}
 
 		kochManager.updateTimestamp();
 		try {
