@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class Edge implements Serializable
 {
     public double X1, Y1, X2, Y2;
-    public Color color;
+    public transient Color color;
     
     public Edge(double X1, double Y1, double X2, double Y2, Color color)
     {
@@ -33,10 +33,11 @@ public class Edge implements Serializable
 
     private void writeObject(java.io.ObjectOutputStream stream)
             throws IOException {
-        stream.writeDouble(X1);
-        stream.writeDouble(X2);
-        stream.writeDouble(Y1);
-        stream.writeDouble(Y2);
+        stream.defaultWriteObject();
+//        stream.writeDouble(X1);
+//        stream.writeDouble(X2);
+//        stream.writeDouble(Y1);
+//        stream.writeDouble(Y2);
 
         stream.writeDouble(color.getRed());
         stream.writeDouble(color.getGreen());
@@ -46,10 +47,11 @@ public class Edge implements Serializable
 
     private void readObject(java.io.ObjectInputStream stream)
           throws IOException, ClassNotFoundException {
-        X1 = stream.readDouble();
-        X2 = stream.readDouble();
-        Y1 = stream.readDouble();
-        Y2 = stream.readDouble();
+        stream.defaultReadObject();
+//        X1 = stream.readDouble();
+//        X2 = stream.readDouble();
+//        Y1 = stream.readDouble();
+//        Y2 = stream.readDouble();
         color =  new Color(stream.readDouble(),stream.readDouble(),stream.readDouble(),stream.readDouble());
 
     }

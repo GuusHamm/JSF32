@@ -32,9 +32,43 @@ public class KochCommandLine implements Observer {
 		System.out.println("calculated edges :" + edges.size());
 
 		SavableEdge savableEdge = new SavableEdge(edges,edgeNumber,edges.size());
-		serializer.writeToBinary(savableEdge);
-        serializer.readFromBinary();
-    }
+		StopWatch stopWatch = new StopWatch();
+
+		stopWatch.start();
+
+		serializer.writeToBinaryNoBuffer(savableEdge);
+		System.out.println(String.format("write: binary with no buffer: %s",stopWatch.toString()));
+		stopWatch.reset();
+
+		stopWatch.start();
+		serializer.writeToBinaryBuffer(savableEdge);
+		System.out.println(String.format("write: binary with buffer: %s",stopWatch.toString()));
+		stopWatch.reset();
+
+		stopWatch.start();
+		serializer.writeToJsonNoBuffer(savableEdge);
+		System.out.println(String.format("write: json with no buffer: %s",stopWatch.toString()));
+		stopWatch.reset();
+
+		stopWatch.start();
+		serializer.writeToJsonBuffer(savableEdge);
+		System.out.println(String.format("write: json with buffer: %s",stopWatch.toString()));
+
+		System.out.println("");
+
+		serializer.readFromBinaryNoBuffer();
+		System.out.println(String.format("read: binary with no buffer: %s",stopWatch.toString()));
+		stopWatch.reset();
+
+		serializer.readFromBinaryBuffer();
+		System.out.println(String.format("read: binary with buffer: %s",stopWatch.toString()));
+		stopWatch.reset();
+
+		stopWatch.start();
+		serializer.readJSONBuffer();
+		System.out.println(String.format("read: json with buffer: %s",stopWatch.toString()));
+		stopWatch.reset();
+	}
 
 
 
