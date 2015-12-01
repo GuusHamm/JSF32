@@ -89,7 +89,6 @@ public class KochTask extends Task<ArrayList> implements Observer{
 				}
 			});
 
-
 		kochManager.updateTimestamp();
 		try {
 			Thread.sleep((kochFractal.getLevel() < 4) ? sleepTimer : 5);

@@ -60,7 +60,6 @@ public class KochManager {
 
 
     public void drawEdges(Color color) {
-
         application.clearKochPanel();
 		synchronized (edges) {
 			for (Edge e : edges) {
@@ -106,7 +105,6 @@ public class KochManager {
 				application.setTextDraw(ms);
 				application.setTextNrEdges(String.valueOf(edges.size()));
 			});
-
 	}
 
 	public ArrayList<Edge> getOldEdges() {

@@ -3,7 +3,6 @@ package jsf32kochfractalfx;
 import calculate.Edge;
 import calculate.KochFractal;
 
-import java.io.*;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -34,6 +33,7 @@ public class KochCommandLine implements Observer {
 
 		SavableEdge savableEdge = new SavableEdge(edges,edgeNumber,edges.size());
 		serializer.writeToBinary(savableEdge);
+        serializer.readFromBinary();
     }
 
 

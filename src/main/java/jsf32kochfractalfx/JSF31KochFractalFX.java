@@ -166,6 +166,16 @@ public class JSF31KochFractalFX extends Application {
         });
         grid.add(buttonFitFractal, 14, 6);
 
+		Button buttonReadFile = new Button();
+		buttonReadFile.setText("Read File");
+		buttonReadFile.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				readFromFileEvent(event);
+			}
+		});
+		grid.add(buttonReadFile, 14, 5);
+
         labelProgressLeft = new Label();
         labelProgressLeft.setText("");
         grid.add(labelProgressLeft, 1, 7);
@@ -318,11 +328,21 @@ public class JSF31KochFractalFX extends Application {
     }
 
 	private void readFromFileEvent(ActionEvent event) {
+		kochManager.cancel();
+
 		SavableEdge savableEdge = serializer.readFromBinary();
 		kochManager.setEdges(savableEdge.getEdges());
-		kochManager.setOldEdges(savableEdge.getEdges());
+
 		currentLevel = savableEdge.getLevel();
-		requestDrawEdges();
+
+		kochManager.drawEdges(null);
+
+		labelLevel.setText("Level: " + currentLevel);
+		kochManager.signalEnd();
+		for(Edge e : kochManager.getOldEdges()){
+			System.out.println(e.toString());
+		}
+
 	}
 
     private void kochPanelMouseClicked(MouseEvent event) {
