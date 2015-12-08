@@ -46,20 +46,23 @@ public class KochCommandLine implements Observer {
 		stopWatch.reset();
 
 		stopWatch.start();
-		serializer.writeToJsonNoBuffer(savableEdge);
-		System.out.println(String.format("write: json with no buffer: %s",stopWatch.toString()));
+		serializer.writeToJsonBuffer(savableEdge);
+		System.out.println(String.format("write: json with buffer: %s",stopWatch.toString()));
 		stopWatch.reset();
 
 		stopWatch.start();
-		serializer.writeToJsonBuffer(savableEdge);
-		System.out.println(String.format("write: json with buffer: %s",stopWatch.toString()));
+		serializer.writeMapped(savableEdge);
+		System.out.println(String.format("write: mapped: %s",stopWatch.toString()));
+		stopWatch.reset();
 
 		System.out.println("");
 
+		stopWatch.start();
 		serializer.readFromBinaryNoBuffer();
 		System.out.println(String.format("read: binary with no buffer: %s",stopWatch.toString()));
 		stopWatch.reset();
 
+		stopWatch.start();
 		serializer.readFromBinaryBuffer();
 		System.out.println(String.format("read: binary with buffer: %s",stopWatch.toString()));
 		stopWatch.reset();
@@ -67,6 +70,11 @@ public class KochCommandLine implements Observer {
 		stopWatch.start();
 		serializer.readJSONBuffer();
 		System.out.println(String.format("read: json with buffer: %s",stopWatch.toString()));
+		stopWatch.reset();
+
+		stopWatch.start();
+		serializer.readMapped();
+		System.out.println(String.format("read: mapped: %s",stopWatch.toString()));
 		stopWatch.reset();
 	}
 

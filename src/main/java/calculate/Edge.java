@@ -34,11 +34,6 @@ public class Edge implements Serializable
     private void writeObject(java.io.ObjectOutputStream stream)
             throws IOException {
         stream.defaultWriteObject();
-//        stream.writeDouble(X1);
-//        stream.writeDouble(X2);
-//        stream.writeDouble(Y1);
-//        stream.writeDouble(Y2);
-
         stream.writeDouble(color.getRed());
         stream.writeDouble(color.getGreen());
         stream.writeDouble(color.getBlue());
@@ -48,10 +43,6 @@ public class Edge implements Serializable
     private void readObject(java.io.ObjectInputStream stream)
           throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-//        X1 = stream.readDouble();
-//        X2 = stream.readDouble();
-//        Y1 = stream.readDouble();
-//        Y2 = stream.readDouble();
         color =  new Color(stream.readDouble(),stream.readDouble(),stream.readDouble(),stream.readDouble());
 
     }

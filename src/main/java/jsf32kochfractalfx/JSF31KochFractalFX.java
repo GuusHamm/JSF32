@@ -330,7 +330,7 @@ public class JSF31KochFractalFX extends Application {
 	private void readFromFileEvent(ActionEvent event) {
 		kochManager.cancel();
 
-		SavableEdge savableEdge = serializer.readFromBinaryBuffer();
+		SavableEdge savableEdge = serializer.readMapped();
 		kochManager.setEdges(savableEdge.getEdges());
 
 		currentLevel = savableEdge.getLevel();
