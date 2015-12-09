@@ -80,16 +80,6 @@ public class KochCommandLine implements Observer {
 
 
 
-//	private void writeToBufferedText(SavableEdge savable ,File outputFile){
-//		try {
-//			FileWriter fw = new FileWriter(outputFile);
-//			BufferedWriter bw = new BufferedWriter(fw);
-//			bw.write(txt);
-//			bw.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//
 //	}
 
 
@@ -105,6 +95,16 @@ public class KochCommandLine implements Observer {
 		System.out.println("Hurray Great Success");
 	}
 
+	//	private void writeToBufferedText(SavableEdge savable ,File outputFile){
+//		try {
+//			FileWriter fw = new FileWriter(outputFile);
+//			BufferedWriter bw = new BufferedWriter(fw);
+//			bw.write(txt);
+//			bw.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
 	@Override
 	public void update(Observable o, Object object) {
 		Edge edge = (Edge) object;
