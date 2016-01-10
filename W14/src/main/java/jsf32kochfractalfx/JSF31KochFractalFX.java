@@ -4,7 +4,7 @@
  */
 package jsf32kochfractalfx;
 
-import calculate.*;
+import calculate.Edge;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -12,11 +12,13 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.canvas.*;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.input.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -240,6 +242,49 @@ public class JSF31KochFractalFX extends Application {
         primaryStage.setTitle("Koch Fractal");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+//        try {
+//            WatchService watcher = FileSystems.getDefault().newWatchService();
+//            Path dir = Paths.get("/home/guushamm");
+//            dir.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+//
+//
+//            new Thread() {
+//                @Override
+//                public void run() {
+//                    while (true){
+//                        System.out.println("CUNT");
+//                        WatchKey key;
+//                        try {
+//                            key = watcher.take();
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                            return;
+//                        }
+//
+//                        for (WatchEvent<?> event : key.pollEvents()) {
+//                            WatchEvent.Kind<?> kind = event.kind();
+//                            @SuppressWarnings("unchecked")
+//                            WatchEvent<Path> ev = (WatchEvent<Path>) event;
+//
+//                            Path fileName = ev.context();
+//
+//
+//                            if (fileName.toString().equals("KochMapped.txt")) {
+//                                fitFractalButtonActionPerformed(null);
+//                            }
+//                        }
+//
+////                        Thread.yield();
+//
+//                    }
+//
+//                }
+//            }.start();
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+
     }
 
     public void clearKochPanel() {
