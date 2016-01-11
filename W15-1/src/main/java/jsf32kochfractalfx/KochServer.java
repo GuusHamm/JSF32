@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Created by guushamm on 6-1-16.
  */
 public class KochServer {
-	ServerSocket serverSocket = null;
+//	ServerSocket serverSocket = null;
 	boolean listening;
 
 	ArrayList<String> ips;
@@ -28,12 +28,12 @@ public class KochServer {
 
 		kochProtocol = KochProtocol.getInstance();
 
-		try {
-			serverSocket = new ServerSocket(4444);
-		} catch (IOException e) {
-			System.err.println("Could not listen on port: 4444.");
-			System.exit(-1);
-		}
+//		try {
+////			serverSocket = new ServerSocket(4444);
+//		} catch (IOException e) {
+//			System.err.println("Could not listen on port: 4444.");
+//			System.exit(-1);
+//		}
 	}
 
 	public void handleInput(){
