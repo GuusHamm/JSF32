@@ -7,12 +7,12 @@
 /W13/Application.iml
 /W13/JSF31KochFractalFX-startup.iml
 /W14/.idea
-/W15/.idea
-/W15/target
-/W15/JSF31KochFractalFX-startup (1).iml
-/W15/JSF31KochFractalFX-startup.iml
-/W15/Application.iml
-/W15/manifest.mf
+/W15-1/.idea
+/W15-1/target
+/W15-1/JSF31KochFractalFX-startup (1).iml
+/W15-1/JSF31KochFractalFX-startup.iml
+/W15-1/Application.iml
+/W15-1/manifest.mf
 /.idea
 *.class
 
