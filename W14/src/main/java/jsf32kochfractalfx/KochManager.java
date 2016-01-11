@@ -5,6 +5,7 @@ import calculate.KochFractal;
 import calculate.KochTask;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
+import watch.WatchDirMain;
 
 import java.util.ArrayList;
 import java.util.concurrent.CyclicBarrier;
@@ -29,7 +30,10 @@ public class KochManager {
 
 	private StopWatch stopWatch;
 
+	private WatchDirMain watchDirMain;
+
     public KochManager(jsf32kochfractalfx.JSF31KochFractalFX application) {
+		watchDirMain = new WatchDirMain(System.getProperty("user.home"),false,this);
 
         this.application = application;
     }
@@ -120,6 +124,35 @@ public class KochManager {
 
 	public void setOldEdges(ArrayList<Edge> oldEdges) {
 		this.oldEdges = oldEdges;
+	}
+
+	public synchronized void entry_created() {
+		Serializer serializer = new Serializer();
+		SavableEdge savableEdge = serializer.readFromBinaryBuffer();
+
+//		oldEdges = edges;
+		edges = savableEdge.getEdges();
+
+		try {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					application.clearKochPanel();
+					application.setCurrentLevel(savableEdge.getLevel());
+					application.requestDrawEdges();
+				}});
+		}catch (IllegalStateException e){
+
+		}
+
+	}
+
+	public synchronized void entry_deleted() {
+		return;
+	}
+
+	public synchronized void entry_modified() {
+		return;
 	}
 }
 

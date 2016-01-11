@@ -13,12 +13,20 @@ import java.nio.channels.FileChannel;
 public class Serializer {
 
 	private File fileBinary = new File(System.getProperty("user.home") + "/KochBinary.bin");
+	private File fileBinaryDone = new File(System.getProperty("user.home") + "/KochBinaryDone.bin");
 	private File fileJson = new File(System.getProperty("user.home") + "/KochJson.json");
 	private File fileMapped = new File(System.getProperty("user.home") + "/KochMapped.txt");
 
 	private int fileSize = 68157440;
 
 	public void writeToBinaryBuffer(SavableEdge savable) {
+		fileBinary.delete();
+		try {
+			fileBinary.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		try {
 			FileOutputStream fileOutputStream = new FileOutputStream(fileBinary);
 			OutputStream buffer = new BufferedOutputStream(fileOutputStream);
@@ -31,9 +39,17 @@ public class Serializer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		fileBinary.renameTo(fileBinaryDone);
 	}
 
 	public void writeToBinaryNoBuffer(SavableEdge savable) {
+		fileBinary.delete();
+		try {
+			fileBinary.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		try {
 			FileOutputStream fileOutputStream = new FileOutputStream(fileBinary);
 			ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
@@ -46,7 +62,9 @@ public class Serializer {
 		}
 	}
     public SavableEdge readMapped(){
-        SavableEdge savableEdge=null;
+
+
+		SavableEdge savableEdge=null;
 
         byte[] serialized = new byte[fileSize];
         try {
@@ -63,7 +81,14 @@ public class Serializer {
     }
 
     public void writeMapped(SavableEdge savableEdge){
-        byte[] serialized = SerializationUtils.serialize(savableEdge);
+		fileMapped.delete();
+		try {
+			fileMapped.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		byte[] serialized = SerializationUtils.serialize(savableEdge);
         try
         {
             RandomAccessFile memoryMappedFile = new RandomAccessFile(fileMapped, "rw");
@@ -78,6 +103,13 @@ public class Serializer {
 
 
 	public void writeToJsonBuffer(SavableEdge savableEdge) {
+		fileJson.delete();
+		try {
+			fileJson.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		Gson gson = new Gson();
 		String json = gson.toJson(savableEdge, SavableEdge.class);
 
@@ -95,7 +127,7 @@ public class Serializer {
 
 		SavableEdge instance = null;
 		try {
-			FileInputStream fileInputStream = new FileInputStream(fileBinary);
+			FileInputStream fileInputStream = new FileInputStream(fileBinaryDone);
 			ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
 			instance = (SavableEdge) objectInputStream.readObject();
@@ -112,7 +144,7 @@ public class Serializer {
 
 		SavableEdge instance = null;
 		try {
-			FileInputStream fileInputStream = new FileInputStream(fileBinary);
+			FileInputStream fileInputStream = new FileInputStream(fileBinaryDone);
 			InputStream buffer = new BufferedInputStream(fileInputStream);
 			ObjectInputStream objectInputStream = new ObjectInputStream(buffer);
 

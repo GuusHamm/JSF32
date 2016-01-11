@@ -23,8 +23,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.nio.file.*;
-
 /**
  *
  * @author Nico Kuijpers
@@ -45,6 +43,14 @@ public class JSF31KochFractalFX extends Application {
     private KochManager kochManager;
 
 	private Serializer serializer;
+
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+
+    public void setCurrentLevel(int currentLevel) {
+        this.currentLevel = currentLevel;
+    }
 
     // Current level of Koch fractal
     private int currentLevel = 1;

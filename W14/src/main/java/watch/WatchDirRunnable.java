@@ -1,5 +1,7 @@
 package watch;
 
+import jsf32kochfractalfx.KochManager;
+
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -18,11 +20,13 @@ public class WatchDirRunnable implements Runnable {
     private final Map<WatchKey, Path> keys; // the map of WatchKey's and belonging Path
     private final boolean recursive;
     private boolean trace = false;
+    private KochManager km;
 
     /**
      * Creates a WatchService and registers the given directory
      */
-    WatchDirRunnable(Path dir, boolean recursive) throws IOException {
+    WatchDirRunnable(Path dir, boolean recursive, KochManager km) throws IOException {
+        this.km = km;
         // create a default WatchService
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<WatchKey, Path>();  // map of watchkeys and path belonging to it
@@ -122,13 +126,25 @@ public class WatchDirRunnable implements Runnable {
                 Path filename = ev.context();
                 Path child = dir.resolve(filename);
 
-                // or you could use: 
+                // or you could use:
                 // Path filename = (Path) event.context();
                 // this leads to the same result as ev.context() below
-                
-                
+
+
                 // print out event
                 System.out.format("%s: %s\n", event.kind().name(), child);
+
+                if (kind == ENTRY_CREATE) {
+                    if (child.endsWith("KochBinaryDone.bin")) {
+                        km.entry_created();
+                    }
+                }
+                if (kind == ENTRY_DELETE) {
+                    km.entry_deleted();
+                }
+                if (kind == ENTRY_MODIFY) {
+                    km.entry_modified();
+                }
 
                 // if directory is created, and watching recursively, then
                 // register it and its sub-directories
