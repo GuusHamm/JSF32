@@ -27,6 +27,9 @@ import javafx.stage.Stage;
  */
 public class JSF31KochFractalFX extends Application {
 
+    KochClient kochClient;
+
+
     // Zoom and drag
     private double zoomTranslateX = 0.0;
     private double zoomTranslateY = 0.0;
@@ -94,7 +97,8 @@ public class JSF31KochFractalFX extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-		serializer = new Serializer();
+
+        serializer = new Serializer();
 
         // Define grid pane
         GridPane grid;
@@ -240,6 +244,8 @@ public class JSF31KochFractalFX extends Application {
         primaryStage.setTitle("Koch Fractal");
         primaryStage.setScene(scene);
         primaryStage.show();
+        kochClient = new KochClient(kochManager);
+        new Thread(kochClient).start();
     }
 
     public void clearKochPanel() {

@@ -48,6 +48,12 @@ public class KochCommandLine implements Observer {
 		System.out.println(String.format("write: binary with buffer: %s",stopWatch.toString()));
 		stopWatch.reset();
 
+//		stopWatch.start();
+//		serializer.writeToBinaryBufferLineByLine(savableEdge);
+//		System.out.println(String.format("write: binary line for line with buffer: %s",stopWatch.toString()));
+//		stopWatch.reset();
+
+
 		stopWatch.start();
 		serializer.writeToJsonBuffer(savableEdge);
 		System.out.println(String.format("write: json with buffer: %s",stopWatch.toString()));

@@ -15,7 +15,12 @@ public class KochCommandLine implements Observer {
 	KochManager kochManager;
 	JSF31KochFractalFX jsf31KochFractalFX;
     Serializer serializer = new Serializer();
+	KochServer kochServer;
+
+
 	public KochCommandLine(int edgeNumber) {
+
+		kochServer = new KochServer();
 
 		jsf31KochFractalFX = new JSF31KochFractalFX();
 		this.kochManager = new KochManager(jsf31KochFractalFX);
@@ -31,8 +36,11 @@ public class KochCommandLine implements Observer {
 		List<Edge> edges = kochManager.getNewEdges();
 		System.out.println("calculated edges :" + edges.size());
 
+
 		SavableEdge savableEdge = new SavableEdge(edges,edgeNumber,edges.size());
 		StopWatch stopWatch = new StopWatch();
+
+		kochServer.sendData(savableEdge);
 
 		stopWatch.start();
 

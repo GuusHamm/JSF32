@@ -34,6 +34,10 @@ public class KochManager {
         this.application = application;
     }
 
+	public JSF31KochFractalFX getApplication() {
+		return application;
+	}
+
 	public void changeLevel(int nxt){
 		stopWatch = new StopWatch();
 		stopWatch.start();

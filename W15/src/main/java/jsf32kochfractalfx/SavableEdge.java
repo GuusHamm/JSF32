@@ -10,9 +10,11 @@ import java.util.List;
  * Created by guushamm on 1-12-15.
  */
 public class SavableEdge implements Serializable {
+
 	private List<Edge> edges;
 	private int level;
 	private int size;
+
 	public SavableEdge(List<Edge> edges, int level, int size) {
 		this.edges = edges;
 		this.level = level;
