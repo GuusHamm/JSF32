@@ -29,7 +29,6 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="JSF31KochFractalFX-startup" />
       </profile>
       <profile default="false" name="Annotation profile for JSF31KochFractalFX-startup (1)" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />

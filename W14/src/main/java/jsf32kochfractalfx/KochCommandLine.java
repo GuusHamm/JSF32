@@ -12,9 +12,12 @@ import java.util.Scanner;
  * Created by guushamm on 25-11-15.
  */
 public class KochCommandLine implements Observer {
+
 	KochManager kochManager;
 	JSF31KochFractalFX jsf31KochFractalFX;
     Serializer serializer = new Serializer();
+
+
 	public KochCommandLine(int edgeNumber) {
 
 		jsf31KochFractalFX = new JSF31KochFractalFX();
