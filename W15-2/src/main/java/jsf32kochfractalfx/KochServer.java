@@ -45,23 +45,23 @@ public class KochServer implements Observer{
                     String input = buffer.readLine();
 
                     KochFractal kochFractal = new KochFractal();
-                    kochFractal.setLevel(Integer.parseInt(input));
+                    kochFractal.setLevel(   Integer.parseInt(input)     );
+                    System.out.println("Server int :" + input);
                     kochFractal.addObserver(this);
 
                     kochFractal.generateBottomEdge();
                     kochFractal.generateLeftEdge();
                     kochFractal.generateRightEdge();
 
-                    List<Edge> edges = manager.getNewEdges();
-
                     PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                    buffer.close();
 
 
-                    System.out.println("ClientSideServer :" + input);
                     String output = kochProtocol.handleOutput(KochProtocol.kochEnum.CalculateEdges, new SavableEdge(manager.getNewEdges(), Integer.parseInt(input), manager.getNewEdges().size()));
+                    System.out.println("ClientSideServer :" + output);
                     out.println(output);
-
+                    buffer.close();
+                    manager.setEdges(new ArrayList<>());
+                    manager.setOldEdges(new ArrayList<>());
 
                 } catch (Exception e1) {
                     e1.printStackTrace();

@@ -188,7 +188,7 @@ public class JSF31KochFractalFX extends Application {
                 kochClient.sendMessage(4);
             }
         });
-        grid.add(buttonSendToServer, 14, 5);
+        grid.add(buttonSendToServer, 14, 7);
 
         labelProgressLeft = new Label();
         labelProgressLeft.setText("");
@@ -312,7 +312,7 @@ public class JSF31KochFractalFX extends Application {
     }
 
     private void increaseLevelButtonActionPerformed(ActionEvent event) {
-        kochManager.cancel();
+//        kochManager.cancel();
         if (currentLevel < 12) {
             // resetZoom();
             currentLevel++;
@@ -329,12 +329,13 @@ public class JSF31KochFractalFX extends Application {
     }
 
     private void decreaseLevelButtonActionPerformed(ActionEvent event) {
-        kochManager.cancel();
+//        kochManager.cancel();
         if (currentLevel > 1) {
             // resetZoom();
             currentLevel--;
             labelLevel.setText("Level: " + currentLevel);
             kochManager.changeLevel(currentLevel);
+
         }
     }
 

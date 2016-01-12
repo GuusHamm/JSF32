@@ -46,33 +46,33 @@ public class KochManager {
 	public void changeLevel(int nxt){
 		stopWatch = new StopWatch();
 		stopWatch.start();
-
-		oldEdges.addAll(edges);
+		oldEdges.clear();
+//		oldEdges.addAll(edges);
 		edges.clear();
 
         count = 0;
 
-
-        pool = Executors.newFixedThreadPool(3);
-        cyclicBarrier = new CyclicBarrier(3);
-
-        if(application != null) {
-            this.leftTask = new KochTask(this, cyclicBarrier, application.getProgressLeft(), application.getLabelProgressLeft(), KochFractal.position.LEFT, nxt);
-            this.bottomTask = new KochTask(this, cyclicBarrier, application.getProgressBottom(), application.getLabelProgressBottom(), KochFractal.position.BOTTOM, nxt);
-            this.rightTask = new KochTask(this, cyclicBarrier, application.getProgressRight(), application.getLabelProgressRight(), KochFractal.position.RIGHT, nxt);
-        }else{
-            this.leftTask = new KochTask(this, cyclicBarrier,null,null, KochFractal.position.LEFT, nxt);
-            this.bottomTask = new KochTask(this, cyclicBarrier,null,null, KochFractal.position.BOTTOM, nxt);
-            this.rightTask = new KochTask(this, cyclicBarrier,null,null, KochFractal.position.RIGHT, nxt);
-        }
-
-		pool.submit(leftTask);
-		pool.submit(bottomTask);
-		pool.submit(rightTask);
-
-        if(application!=null) {
-            application.setTextCalc(stopWatch.toString());
-        }
+		new KochClient(this).sendMessage(nxt);
+//        pool = Executors.newFixedThreadPool(3);
+//        cyclicBarrier = new CyclicBarrier(3);
+//
+//        if(application != null) {
+//            this.leftTask = new KochTask(this, cyclicBarrier, application.getProgressLeft(), application.getLabelProgressLeft(), KochFractal.position.LEFT, nxt);
+//            this.bottomTask = new KochTask(this, cyclicBarrier, application.getProgressBottom(), application.getLabelProgressBottom(), KochFractal.position.BOTTOM, nxt);
+//            this.rightTask = new KochTask(this, cyclicBarrier, application.getProgressRight(), application.getLabelProgressRight(), KochFractal.position.RIGHT, nxt);
+//        }else{
+//            this.leftTask = new KochTask(this, cyclicBarrier,null,null, KochFractal.position.LEFT, nxt);
+//            this.bottomTask = new KochTask(this, cyclicBarrier,null,null, KochFractal.position.BOTTOM, nxt);
+//            this.rightTask = new KochTask(this, cyclicBarrier,null,null, KochFractal.position.RIGHT, nxt);
+//        }
+//
+//		pool.submit(leftTask);
+//		pool.submit(bottomTask);
+//		pool.submit(rightTask);
+//
+//        if(application!=null) {
+//            application.setTextCalc(stopWatch.toString());
+//        }
     }
 
 

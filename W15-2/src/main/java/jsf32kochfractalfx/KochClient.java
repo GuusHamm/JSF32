@@ -22,14 +22,24 @@ public class KochClient {
     public void sendMessage(int lvl) {
         try {
 
-            Socket echoSocket = new Socket("127.0.0.1", 4444);
-            PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true);
-            out.println(lvl);
-            BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+            Socket socket = new Socket("127.0.0.1", 4444);
 
-            String input = in.readLine();
-            SavableEdge savableEdgeReturn = kochProtocol.handleInput(input);
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            //Sending message
+            out.println(lvl);
+
+            String feedback = in.readLine();
+            System.out.println("The client received this as feedback :" + feedback);
+
+            SavableEdge savableEdgeReturn = kochProtocol.handleInput(feedback);
             manager.setEdges(savableEdgeReturn.getEdges());
+
+            in.close();
+            out.close();
+            socket.close();
+            manager.drawEdges(null);
 
         } catch (Exception e) {
             e.printStackTrace();
