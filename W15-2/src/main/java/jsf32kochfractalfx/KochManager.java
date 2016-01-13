@@ -1,17 +1,13 @@
 package jsf32kochfractalfx;
 
 import calculate.Edge;
-import calculate.KochFractal;
 import calculate.KochTask;
 import javafx.application.Platform;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by linux on 23-9-15.
@@ -52,7 +48,7 @@ public class KochManager {
 
         count = 0;
 
-		new KochClient(this).sendMessage(nxt);
+		new KochClient(this).sendMessage(new SavableEdge(null,nxt,0, SavableEdge.Type.singleEdge));
 //        pool = Executors.newFixedThreadPool(3);
 //        cyclicBarrier = new CyclicBarrier(3);
 //
@@ -137,6 +133,11 @@ public class KochManager {
 
 	public void setOldEdges(ArrayList<Edge> oldEdges) {
 		this.oldEdges = oldEdges;
+	}
+
+	public void clearEdges(){
+		this.edges = new ArrayList<>();
+		this.oldEdges= new ArrayList<>();
 	}
 }
 

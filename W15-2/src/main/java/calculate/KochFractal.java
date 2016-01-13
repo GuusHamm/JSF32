@@ -124,7 +124,5 @@ public class KochFractal extends Observable  {
         side = p;
         manager=k;
     }
-
-
 }
 

@@ -29,7 +29,7 @@ public class KochProtocol {
 		serializer = new Serializer();
 	}
 	
-	public String handleOutput(kochEnum kochCommand, SavableEdge savableEdge){
+	public String handleOutput(SavableEdge savableEdge){
 
 		return serialeDesiredObjects64(savableEdge);
 	}

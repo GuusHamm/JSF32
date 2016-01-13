@@ -185,7 +185,14 @@ public class JSF31KochFractalFX extends Application {
         buttonReadFile.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                kochClient.sendMessage(4);
+                if (currentLevel < 12) {
+                    // resetZoom();
+                    currentLevel++;
+                    labelLevel.setText("Level: " + currentLevel);
+
+                    kochClient.sendMessage(new SavableEdge(null,currentLevel,0, SavableEdge.Type.singleEdge));
+
+                }
             }
         });
         grid.add(buttonSendToServer, 14, 7);

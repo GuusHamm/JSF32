@@ -14,10 +14,16 @@ public class SavableEdge implements Serializable {
 	private List<Edge> edges;
 	private int level;
 	private int size;
+
+	public Type getType() {
+		return type;
+	}
+
 	private Type type;
 	public enum Type{
 		singleEdge,
-		AllEdges
+		AllEdges,
+		stop
 	}
 	public SavableEdge(List<Edge> edges, int level, int size, Type type) {
 		this.edges = edges;
