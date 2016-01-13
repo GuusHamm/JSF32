@@ -84,27 +84,6 @@ public class KochServer implements Observer {
 
                     String output;
 
-//
-//                    if (command.getType() == SavableEdge.Type.singleEdge) {
-//
-//                        kochFractal.addObserver(this);
-//                        currentLvl = command.getLevel();
-//                        int nrOfEdges = (int) (3 * Math.pow(4, currentLvl - 1));
-////                        while (manager.getNewEdges().size() < nrOfEdges) {
-////                            Thread.sleep(10);
-////                            System.out.println("size" + );
-////                        }
-//                        kochFractal = new KochFractal();
-//                        kochFractal.setLevel(command.getLevel());
-//                        kochFractal.addObserver(this);
-//
-//                        kochFractal.generateBottomEdge();
-//                        kochFractal.generateLeftEdge();
-//                        kochFractal.generateRightEdge();
-//
-//                        output = kochProtocol.handleOutput(new SavableEdge(null, command.getLevel(), 0, SavableEdge.Type.stop));
-//
-//                    }else
                     if (command.getLevel() > preCalculatedEdgesNumber || command.getLevel()<4) {
                         kochFractal.addObserver(this);
 

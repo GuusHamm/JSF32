@@ -1,200 +1,206 @@
 package jsf32kochfractalfx;
 
+import calculate.Edge;
 import com.google.gson.Gson;
+import javafx.scene.paint.Color;
 import org.apache.commons.lang.SerializationUtils;
 
 import java.io.*;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by woute on 1-12-2015.
  */
 public class Serializer {
 
-	private File fileBinary = new File(System.getProperty("user.home") + "/KochBinary.bin");
-	private File fileBinaryLineDone = new File(System.getProperty("user.home") + "/KochBinaryLineDone.bin");
-	private File fileBinaryLine = new File(System.getProperty("user.home") + "/KochBinaryLine.bin");
-	private File fileBinaryDone = new File(System.getProperty("user.home") + "/KochBinaryDone.bin");
-	private File fileJson = new File(System.getProperty("user.home") + "/KochJson.json");
-	private int fileSize = 68157440;
+    private File fileBinary = new File(System.getProperty("user.home") + "/KochBinary.bin");
+    private File fileBinaryLineDone = new File(System.getProperty("user.home") + "/KochBinaryLineDone.bin");
+    private File fileBinaryLine = new File(System.getProperty("user.home") + "/KochBinaryLine.bin");
+    private File fileBinaryDone = new File(System.getProperty("user.home") + "/KochBinaryDone.bin");
+    private File fileJson = new File(System.getProperty("user.home") + "/KochJson.json");
+    private int fileSize = 68157440;
 
-	private File fileMapped = new File(System.getProperty("user.home") + "/KochMapped.txt");
+    private File fileMapped = new File(System.getProperty("user.home") + "/KochMapped.txt");
 
-	public void writeToBinaryBuffer(SavableEdge savable) {
-		fileBinary.delete();
-		try {
-			fileBinary.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    public void writeToBinaryBuffer(SavableEdge savable) {
+        fileBinary.delete();
+        try {
+            fileBinary.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-		try {
-			FileOutputStream fileOutputStream = new FileOutputStream(fileBinary);
-			OutputStream buffer = new BufferedOutputStream(fileOutputStream);
-			ObjectOutputStream objectOutputStream = new ObjectOutputStream(buffer);
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(fileBinary);
+            OutputStream buffer = new BufferedOutputStream(fileOutputStream);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(buffer);
 
-			objectOutputStream.writeObject(savable);
+            objectOutputStream.writeObject(savable);
 
-			objectOutputStream.close();
-			fileOutputStream.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		fileBinary.renameTo(fileBinaryDone);
-	}
+        fileBinary.renameTo(fileBinaryDone);
+    }
 
-	public void writeToBinaryNoBuffer(SavableEdge savable) {
-		fileBinary.delete();
-		try {
-			fileBinary.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			FileOutputStream fileOutputStream = new FileOutputStream(fileBinary);
-			ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-			objectOutputStream.writeObject(savable);
+    public void writeToBinaryNoBuffer(SavableEdge savable) {
+        fileBinary.delete();
+        try {
+            fileBinary.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(fileBinary);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(savable);
 
-			objectOutputStream.close();
-			fileOutputStream.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	public SavableEdge readMapped() {
-
-
-		SavableEdge savableEdge = null;
-
-		byte[] serialized = new byte[fileSize];
-		try {
-			RandomAccessFile memoryMappedFile = new RandomAccessFile(fileMapped, "rw");
-			MappedByteBuffer out = memoryMappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, fileSize);
-			out.get(serialized);
-			savableEdge = (SavableEdge) org.apache.commons.lang.SerializationUtils.deserialize(serialized);
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return savableEdge;
-
-	}
-
-	public void writeMapped(SavableEdge savableEdge) {
-		fileMapped.delete();
-		try {
-			fileMapped.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		byte[] serialized = SerializationUtils.serialize(savableEdge);
-		try {
-			RandomAccessFile memoryMappedFile = new RandomAccessFile(fileMapped, "rw");
-			MappedByteBuffer out = memoryMappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, fileSize);
-			out.put(serialized);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
+    public SavableEdge readMapped() {
 
 
-	public void writeToJsonBuffer(SavableEdge savableEdge) {
-		fileJson.delete();
-		try {
-			fileJson.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        SavableEdge savableEdge = null;
 
-		Gson gson = new Gson();
-		String json = gson.toJson(savableEdge, SavableEdge.class);
+        byte[] serialized = new byte[fileSize];
+        try {
+            RandomAccessFile memoryMappedFile = new RandomAccessFile(fileMapped, "rw");
+            MappedByteBuffer out = memoryMappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, fileSize);
+            out.get(serialized);
+            savableEdge = (SavableEdge) org.apache.commons.lang.SerializationUtils.deserialize(serialized);
 
-		try {
-			FileWriter fw = new FileWriter(fileJson);
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write(json);
-			bw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return savableEdge;
 
-	public SavableEdge readFromBinaryNoBuffer() {
+    }
 
-		SavableEdge instance = null;
-		try {
-			FileInputStream fileInputStream = new FileInputStream(fileBinaryDone);
-			ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+    public void writeMapped(SavableEdge savableEdge) {
+        fileMapped.delete();
+        try {
+            fileMapped.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-			instance = (SavableEdge) objectInputStream.readObject();
+        byte[] serialized = SerializationUtils.serialize(savableEdge);
+        try {
+            RandomAccessFile memoryMappedFile = new RandomAccessFile(fileMapped, "rw");
+            MappedByteBuffer out = memoryMappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, fileSize);
+            out.put(serialized);
 
-			objectInputStream.close();
-			fileInputStream.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return instance;
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	public SavableEdge readFromBinaryBuffer() {
+    }
 
-		SavableEdge instance = null;
-		try {
-			FileInputStream fileInputStream = new FileInputStream(fileBinaryDone);
-			InputStream buffer = new BufferedInputStream(fileInputStream);
-			ObjectInputStream objectInputStream = new ObjectInputStream(buffer);
 
-			instance = (SavableEdge) objectInputStream.readObject();
+    public void writeToJsonBuffer(SavableEdge savableEdge) {
+        fileJson.delete();
+        try {
+            fileJson.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-			objectInputStream.close();
-			fileInputStream.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return instance;
-	}
+        Gson gson = new Gson();
+        String json = gson.toJson(savableEdge, SavableEdge.class);
 
-	public SavableEdge readJSONBuffer() {
-		Gson gson = new Gson();
+        try {
+            FileWriter fw = new FileWriter(fileJson);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(json);
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-		StringBuilder stringBuilder = new StringBuilder();
-		FileReader fr;
-		try {
-			fr = new FileReader(fileJson);
-			BufferedReader br = new BufferedReader(fr);
+    public SavableEdge readFromBinaryNoBuffer() {
 
-			String line;
-			while ((line = br.readLine()) != null) {
-				stringBuilder.append(line);
-			}
+        SavableEdge instance = null;
+        try {
+            FileInputStream fileInputStream = new FileInputStream(fileBinaryDone);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
-			br.close();
-			fr.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+            instance = (SavableEdge) objectInputStream.readObject();
 
-		String json = stringBuilder.toString();
-		return gson.fromJson(json, SavableEdge.class);
-	}
+            objectInputStream.close();
+            fileInputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return instance;
+    }
 
-	public File getFileBinary() {
-		return fileBinary;
-	}
+    public SavableEdge readFromBinaryBuffer() {
 
-//	public void writeToBinaryBufferLineByLine(SavableEdge savable) {
-//		fileBinaryLine.delete();
-//		try {
-//			fileBinaryLineDone.createNewFile();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+        SavableEdge instance = null;
+        try {
+            FileInputStream fileInputStream = new FileInputStream(fileBinaryDone);
+            InputStream buffer = new BufferedInputStream(fileInputStream);
+            ObjectInputStream objectInputStream = new ObjectInputStream(buffer);
+
+            instance = (SavableEdge) objectInputStream.readObject();
+
+            objectInputStream.close();
+            fileInputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return instance;
+    }
+
+    public SavableEdge readJSONBuffer() {
+        Gson gson = new Gson();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        FileReader fr;
+        try {
+            fr = new FileReader(fileJson);
+            BufferedReader br = new BufferedReader(fr);
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+
+            br.close();
+            fr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String json = stringBuilder.toString();
+        return gson.fromJson(json, SavableEdge.class);
+    }
+
+    public File getFileBinary() {
+        return fileBinary;
+    }
+
+//    public void writeToBinaryBufferLineByLine(SavableEdge savable) {
+//        fileBinaryLine.delete();
+//        try {
+//            fileBinaryLineDone.createNewFile();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 //
 ////		try {
 ////			FileOutputStream fileOutputStream = new FileOutputStream(fileBinaryLine);
@@ -244,7 +250,7 @@ public class Serializer {
 //
 //                    out.put(SerializationUtils.serialize(savable.getEdges().get(newValue)));
 //
-//                    System.out.println("PRODUCER: " + newValue );
+//                    System.out.println("PRODUCER: " + newValue);
 //
 //                    newValue++;
 //                }
@@ -269,103 +275,92 @@ public class Serializer {
 //                }
 //            }
 //        }
-//        System.out.println("PRODUCER: KLAAR" );
-//}
-//
-//	public SavableEdge readFromBinaryBufferLineByLine() {
-//
-//		SavableEdge instance = null;
-//		try {
-//			FileInputStream fileInputStream = new FileInputStream(fileBinaryDone);
-//			InputStream buffer = new BufferedInputStream(fileInputStream);
-//			ObjectInputStream objectInputStream = new ObjectInputStream(buffer);
-//
-//			int lvl = objectInputStream.readInt();
-//			int size = objectInputStream.readInt();
-//			ArrayList<Edge> edges = new ArrayList<>();
-//
-//			for(int i=0;i<size;i++){
-//				edges.add((Edge)objectInputStream.readObject());
-//			}
-//			instance = new SavableEdge(edges,lvl,size);
-//
-//			objectInputStream.close();
-//			fileInputStream.close();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return instance;
-//	}
-//
-//
-//
-//    private static final String BUFFERFILE = "buffer.bin";
-//    private static final boolean EXCLUSIVE = false;
-//    private static final boolean SHARED = true;
-//    private static final int STATUS_NOT_READ = 1;
-//    private static final int STATUS_READ = 0;
-//    private static final int MAXVAL = 400;
-//    private static final int NBYTES = 12;
-//
-//    public static void main(String arsg[]) throws IOException, InterruptedException {
-//
-//        Random r = new Random();
-//        FileLock exclusiveLock = null;
-//        try {
-//            RandomAccessFile raf = new RandomAccessFile(BUFFERFILE, "rw");
-//            FileChannel ch = raf.getChannel();
-//
-//            MappedByteBuffer out = ch.map(FileChannel.MapMode.READ_WRITE, 0, NBYTES);
-//
-//            boolean finished = false;
-//            while (!finished) {
-//
-//                exclusiveLock = ch.lock(0, NBYTES, EXCLUSIVE);
-//
-//                /**
-//                 * Try to read the data . . .
-//                 */
-//
-//                // layout:
-//                //      0 .. 3 :    4 bytes int with maxvalue
-//                //      4 .. 7 :    4 bytes int with status
-//                //      8 .. 11:    4 bytes int with value
-//
-//                // Vraag de maximumwaarde, status en geproduceerde waarde op
-//                out.position(0);
-//                int lvl = out.getInt();
-//                int size = out.getInt();
-//                ArrayList<Edge> edges = new ArrayList<>();
-//                // Alleen als er iets "nieuws" geproduceerd is verwerken we de
-//                // gelezen value
-//                if (status == STATUS_NOT_READ) {
-//                    // Nieuwe waarde gelezen. Zet status in bestand
-//                    out.position(4);
-//                    out.putInt(STATUS_READ);
-//                    System.out.println("CONSUMER: " + value );
-//                    // Bepaal of we klaar zijn, dat is als de gelezen waarde
-//                    // gelijk is aan de maxVal in bytes 0 .. 3 van het bestand
-//                    finished = (size == edges.size());
-//                }
-//
-//                Thread.sleep(r.nextInt(10));
-//                // release the lock
-//                exclusiveLock.release();
-//
-//            }
-//        } catch (java.io.IOException ioe) {
-//            System.err.println(ioe);
-//        } finally {
-//            if (exclusiveLock != null) {
-//                exclusiveLock.release();
-//            }
-//        }
-//        System.out.println("CONSUMER: KLAAR");
+//        System.out.println("PRODUCER: KLAAR");
 //    }
-//
-//    }
-//
-//
 
 
+
+
+    private static final boolean EXCLUSIVE = false;
+    private static final int NBYTES = 56;
+
+    public void writeToBinaryBufferLineByLine(SavableEdge savableEdge) throws IOException, InterruptedException {
+
+        Random r = new Random();
+        FileLock exclusiveLock = null;
+        try {
+            RandomAccessFile raf = new RandomAccessFile(System.getProperty("user.home") + "/KochBinaryDone.bin", "rw");
+            FileChannel ch = raf.getChannel();
+            MappedByteBuffer out = ch.map(FileChannel.MapMode.READ_WRITE, 0, NBYTES);
+
+            List<Edge> newValue=  savableEdge.getEdges();
+
+            out.putInt(savableEdge.getLevel());
+            out.putInt(newValue.size());
+
+            for (int i = 0; i < newValue.size(); i++) {
+
+                exclusiveLock = ch.lock(0, NBYTES, EXCLUSIVE);
+
+                out.putDouble(newValue.get(i).X1);
+                out.putDouble(newValue.get(i).Y1);
+                out.putDouble(newValue.get(i).X2);
+                out.putDouble(newValue.get(i).Y2);
+                out.putDouble(newValue.get(i).color.getRed());
+                out.putDouble(newValue.get(i).color.getGreen());
+                out.putDouble(newValue.get(i).color.getBlue());
+                out.putDouble(newValue.get(i).color.getOpacity());
+
+                System.out.println("position" + out.position());
+
+                exclusiveLock.release();
+
+                out = ch.map(FileChannel.MapMode.READ_WRITE, i*NBYTES, NBYTES);
+            }
+        } catch (java.io.IOException ioe) {
+            System.err.println(ioe);
+        }
+    }
+    public SavableEdge readFromBinaryBufferLineByLine() {
+
+        SavableEdge instance = null;
+        Random r = new Random();
+        FileLock exclusiveLock = null;
+        try {
+            RandomAccessFile raf = new RandomAccessFile(System.getProperty("user.home") + "/KochBinaryDone.bin", "rw");
+            FileChannel ch = raf.getChannel();
+
+            MappedByteBuffer out = ch.map(FileChannel.MapMode.READ_WRITE, 0, NBYTES);
+//            exclusiveLock = ch.lock(0, NBYTES, false);
+
+            int lvl = out.getInt();
+            int size = out.getInt();
+            ArrayList<Edge> edges = new ArrayList<>();
+
+            for (int i = 0; i < size; i++) {
+                exclusiveLock = ch.lock( i*NBYTES, NBYTES, EXCLUSIVE);
+                out.position(i*NBYTES);
+                double x1 = out.getDouble();
+                double y1 = out.getDouble();
+                double x2 = out.getDouble();
+                double y2 = out.getDouble();
+
+                Color color = new Color(out.getDouble(),out.getDouble(),out.getDouble(),out.getDouble());
+                edges.add(new Edge(x1,y1,x2,y2, color));
+                exclusiveLock.release();
+                out = ch.map(FileChannel.MapMode.READ_WRITE, i*NBYTES, NBYTES);
+            }
+            System.out.println("total read edges:"+edges.size());
+            instance = new SavableEdge(edges, lvl, size);
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return instance;
+    }
 }
+
+
+

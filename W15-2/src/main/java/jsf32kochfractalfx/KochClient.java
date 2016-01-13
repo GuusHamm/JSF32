@@ -32,7 +32,7 @@ public class KochClient {
 
             String feedback = in.readLine();
 //            System.out.println("The client received this as feedback :" + feedback);
-//
+
             SavableEdge savableEdgeReturn = kochProtocol.handleInput(feedback);
 
             if(savableEdgeReturn.getType()== SavableEdge.Type.AllEdges) {

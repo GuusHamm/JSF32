@@ -3,6 +3,7 @@ package jsf32kochfractalfx;
 import calculate.Edge;
 import calculate.KochFractal;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -18,7 +19,7 @@ public class KochCommandLine implements Observer {
     Serializer serializer = new Serializer();
 
 
-	public KochCommandLine(int edgeNumber) {
+	public KochCommandLine(int edgeNumber) throws IOException, InterruptedException {
 
 		jsf31KochFractalFX = new JSF31KochFractalFX();
 		this.kochManager = new KochManager(jsf31KochFractalFX);
@@ -38,53 +39,9 @@ public class KochCommandLine implements Observer {
 		StopWatch stopWatch = new StopWatch();
 
 		stopWatch.start();
+		serializer.writeToBinaryBufferLineByLine(savableEdge);
+		serializer.readFromBinaryBufferLineByLine();
 
-		serializer.writeToBinaryNoBuffer(savableEdge);
-		System.out.println(String.format("write: binary with no buffer: %s",stopWatch.toString()));
-		stopWatch.reset();
-
-		stopWatch.start();
-		serializer.writeToBinaryBuffer(savableEdge);
-		System.out.println(String.format("write: binary with buffer: %s",stopWatch.toString()));
-		stopWatch.reset();
-
-//		stopWatch.start();
-//		serializer.writeToBinaryBufferLineByLine(savableEdge);
-//		System.out.println(String.format("write: binary line for line with buffer: %s",stopWatch.toString()));
-//		stopWatch.reset();
-
-
-		stopWatch.start();
-		serializer.writeToJsonBuffer(savableEdge);
-		System.out.println(String.format("write: json with buffer: %s",stopWatch.toString()));
-		stopWatch.reset();
-
-		stopWatch.start();
-		serializer.writeMapped(savableEdge);
-		System.out.println(String.format("write: mapped: %s",stopWatch.toString()));
-		stopWatch.reset();
-
-		System.out.println("");
-
-		stopWatch.start();
-		serializer.readFromBinaryNoBuffer();
-		System.out.println(String.format("read: binary with no buffer: %s",stopWatch.toString()));
-		stopWatch.reset();
-
-		stopWatch.start();
-		serializer.readFromBinaryBuffer();
-		System.out.println(String.format("read: binary with buffer: %s",stopWatch.toString()));
-		stopWatch.reset();
-
-		stopWatch.start();
-		serializer.readJSONBuffer();
-		System.out.println(String.format("read: json with buffer: %s",stopWatch.toString()));
-		stopWatch.reset();
-
-		stopWatch.start();
-		serializer.readMapped();
-		System.out.println(String.format("read: mapped: %s",stopWatch.toString()));
-		stopWatch.reset();
 	}
 
 
@@ -99,7 +56,13 @@ public class KochCommandLine implements Observer {
 
 		int i = input.nextInt();
 		System.out.println("Calculating Edges");
-		new KochCommandLine(i);
+		try {
+			new KochCommandLine(i);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		System.out.println("Hurray Great Success");
 	}
