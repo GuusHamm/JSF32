@@ -56,7 +56,12 @@ public class KochServer implements Observer{
                     PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 
 
-                    String output = kochProtocol.handleOutput(KochProtocol.kochEnum.CalculateEdges, new SavableEdge(manager.getNewEdges(), Integer.parseInt(input), manager.getNewEdges().size()));
+                    String output ;
+                    if(manager.getNewEdges().size()>1) {
+                        output = kochProtocol.handleOutput(KochProtocol.kochEnum.CalculateEdges, new SavableEdge(manager.getNewEdges(), Integer.parseInt(input), manager.getNewEdges().size(), SavableEdge.Type.AllEdges));
+                    }else {
+                        output = kochProtocol.handleOutput(KochProtocol.kochEnum.CalculateEdges, new SavableEdge(manager.getNewEdges(), Integer.parseInt(input), manager.getNewEdges().size(), SavableEdge.Type.singleEdge));
+                    }
                     System.out.println("ClientSideServer :" + output);
                     out.println(output);
                     buffer.close();
