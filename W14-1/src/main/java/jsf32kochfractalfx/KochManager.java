@@ -126,10 +126,38 @@ public class KochManager {
 	}
 
 	public synchronized void entry_created() {
-		Serializer serializer = new Serializer();
-		SavableEdge savableEdge = serializer.readFromBinaryBuffer();
+		entry_modified();
+//		Serializer serializer = new Serializer();
+//		SavableEdge savableEdge = serializer.readFromBinaryBuffer();
+//
+////		oldEdges = edges;
+//		edges = savableEdge.getEdges();
+//
+//		try {
+//			Platform.runLater(new Runnable() {
+//				@Override
+//				public void run() {
+//					application.clearKochPanel();
+//					application.setCurrentLevel(savableEdge.getLevel());
+//					application.requestDrawEdges();
+//				}});
+//		}catch (IllegalStateException e){
+//
+//		}
 
-//		oldEdges = edges;
+	}
+
+	public synchronized void entry_deleted() {
+		return;
+	}
+
+	public synchronized void entry_modified() {
+		SavableEdge savableEdge = new Serializer().readFromBinaryBufferLineByLine();
+//		application.setCurrentLevel(savableEdge.getLevel());
+//		application.clearKochPanel();
+//		oldEdges = new ArrayList<>();
+//		edges = savableEdge.getEdges();
+
 		edges = savableEdge.getEdges();
 
 		try {
@@ -143,15 +171,6 @@ public class KochManager {
 		}catch (IllegalStateException e){
 
 		}
-
-	}
-
-	public synchronized void entry_deleted() {
-		return;
-	}
-
-	public synchronized void entry_modified() {
-		return;
 	}
 }
 

@@ -282,7 +282,8 @@ public class Serializer {
 
 
     private static final boolean EXCLUSIVE = false;
-    private static final int NBYTES = 76;
+//    private static final int NBYTES = 76;
+    private static final int NBYTES = 72;
 
     public void writeToBinaryBufferLineByLine(SavableEdge savableEdge) throws IOException, InterruptedException {
 
@@ -302,7 +303,7 @@ public class Serializer {
 
                 exclusiveLock = ch.lock((i*NBYTES)+8, NBYTES, EXCLUSIVE);
 
-                out.putInt(0);//can read
+//                out.putInt(0);//can read
                 out.putDouble(newValue.get(i).X1);
                 out.putDouble(newValue.get(i).Y1);
                 out.putDouble(newValue.get(i).X2);
@@ -312,13 +313,12 @@ public class Serializer {
                 out.putDouble(newValue.get(i).color.getBlue());
                 out.putDouble(newValue.get(i).color.getOpacity());
 
-                System.out.println("position" + out.position());
-                int newPosition = (i*NBYTES)+8;
-                System.out.println("new position of writer" + newPosition);
-                out.position(newPosition);
-                out.putInt(1);
+//                System.out.println("position" + out.position());
+//                int index =((i*NBYTES)+8);
+//                System.out.println("index is " + index);
+//                out.putInt(index,1);
+
                 exclusiveLock.release();
-                System.out.println(i);
                 out = ch.map(FileChannel.MapMode.READ_WRITE, (i*NBYTES)+8, NBYTES);
             }
         } catch (java.io.IOException ioe) {
@@ -328,7 +328,6 @@ public class Serializer {
     public SavableEdge readFromBinaryBufferLineByLine() {
 
         SavableEdge instance = null;
-        Random r = new Random();
         FileLock exclusiveLock = null;
         try {
             RandomAccessFile raf = new RandomAccessFile(System.getProperty("user.home") + "/KochBinaryDone.bin", "rw");
@@ -345,11 +344,13 @@ public class Serializer {
                 System.out.println("reading pos:" +((int)(i*NBYTES)+8));
                 exclusiveLock = ch.lock( (i*NBYTES)+8, NBYTES, EXCLUSIVE);
 
-                int oldPosition = out.position();
-                while(out.getInt()!=1){
-                    out.position(oldPosition);
-                    Thread.sleep(10);
-                }
+//                int oldPosition = out.position();
+//                int testing = out.getInt();
+//                while(testing!=1){
+//                    out.position(oldPosition);
+//                    testing = out.getInt();
+//                    Thread.sleep(10);
+//                }
                 double x1 = out.getDouble();
                 double y1 = out.getDouble();
                 double x2 = out.getDouble();
