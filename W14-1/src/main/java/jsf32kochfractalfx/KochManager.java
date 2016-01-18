@@ -34,7 +34,6 @@ public class KochManager {
 
     public KochManager(jsf32kochfractalfx.JSF31KochFractalFX application) {
 		watchDirMain = new WatchDirMain(System.getProperty("user.home"),false,this);
-
         this.application = application;
     }
 

@@ -282,7 +282,7 @@ public class Serializer {
 
 
     private static final boolean EXCLUSIVE = false;
-    private static final int NBYTES = 56;
+    private static final int NBYTES = 76;
 
     public void writeToBinaryBufferLineByLine(SavableEdge savableEdge) throws IOException, InterruptedException {
 
@@ -300,8 +300,9 @@ public class Serializer {
 
             for (int i = 0; i < newValue.size(); i++) {
 
-                exclusiveLock = ch.lock(0, NBYTES, EXCLUSIVE);
+                exclusiveLock = ch.lock((i*NBYTES)+8, NBYTES, EXCLUSIVE);
 
+                out.putInt(0);//can read
                 out.putDouble(newValue.get(i).X1);
                 out.putDouble(newValue.get(i).Y1);
                 out.putDouble(newValue.get(i).X2);
@@ -312,10 +313,13 @@ public class Serializer {
                 out.putDouble(newValue.get(i).color.getOpacity());
 
                 System.out.println("position" + out.position());
-
+                int newPosition = (i*NBYTES)+8;
+                System.out.println("new position of writer" + newPosition);
+                out.position(newPosition);
+                out.putInt(1);
                 exclusiveLock.release();
-
-                out = ch.map(FileChannel.MapMode.READ_WRITE, i*NBYTES, NBYTES);
+                System.out.println(i);
+                out = ch.map(FileChannel.MapMode.READ_WRITE, (i*NBYTES)+8, NBYTES);
             }
         } catch (java.io.IOException ioe) {
             System.err.println(ioe);
@@ -338,8 +342,14 @@ public class Serializer {
             ArrayList<Edge> edges = new ArrayList<>();
 
             for (int i = 0; i < size; i++) {
-                exclusiveLock = ch.lock( i*NBYTES, NBYTES, EXCLUSIVE);
-                out.position(i*NBYTES);
+                System.out.println("reading pos:" +((int)(i*NBYTES)+8));
+                exclusiveLock = ch.lock( (i*NBYTES)+8, NBYTES, EXCLUSIVE);
+
+                int oldPosition = out.position();
+                while(out.getInt()!=1){
+                    out.position(oldPosition);
+                    Thread.sleep(10);
+                }
                 double x1 = out.getDouble();
                 double y1 = out.getDouble();
                 double x2 = out.getDouble();
@@ -348,7 +358,7 @@ public class Serializer {
                 Color color = new Color(out.getDouble(),out.getDouble(),out.getDouble(),out.getDouble());
                 edges.add(new Edge(x1,y1,x2,y2, color));
                 exclusiveLock.release();
-                out = ch.map(FileChannel.MapMode.READ_WRITE, i*NBYTES, NBYTES);
+                out = ch.map(FileChannel.MapMode.READ_WRITE, (i*NBYTES)+8, NBYTES);
             }
             System.out.println("total read edges:"+edges.size());
             instance = new SavableEdge(edges, lvl, size);
