@@ -9,6 +9,8 @@ import java.io.*;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -286,8 +288,14 @@ public class Serializer {
     private static final int NBYTES = 72;
 
     public void writeToBinaryBufferLineByLine(SavableEdge savableEdge) throws IOException, InterruptedException {
+        fileBinaryDone.deleteOnExit();
+        fileBinaryDone = new File(System.getProperty("user.home") + "/KochBinaryDone.bin");
+        if(fileBinaryDone.delete()){
+            System.out.println();
+        }else{
+            System.out.println();
+        }
 
-        Random r = new Random();
         FileLock exclusiveLock = null;
         try {
             RandomAccessFile raf = new RandomAccessFile(System.getProperty("user.home") + "/KochBinaryDone.bin", "rw");
